@@ -1,3 +1,4 @@
+import { AppState } from "../AppState.js";
 import { generateId } from "../utils/GenerateId.js";
 
 
@@ -8,8 +9,12 @@ export class CaseFile {
     this.agency = data.agency
     this.details = data.details
     this.caseNumber = this.generateCaseNumber()
-    this.createdAt = new Date() // there is something wrong here
-    this.lastOpenedAt = new Date() // idk? something here will need to be updated
+    //  is there a date already ? (yes) use that one : (no) create one
+    this.createdAt = data.createdAt ? new Date(data.createdAt) : new Date()
+    this.lastOpenedAt = data.lastOpenedAt ? new Date(data.lastOpenedAt) : new Date()
+
+    this.redacted = true
+    // console.log('📃', this);
   }
 
 
@@ -31,13 +36,19 @@ export class CaseFile {
     <div class="text-secondary">
       <div><i class="mdi mdi-office-building"></i> Agency: ${this.agency}</div>
       <div><i class="mdi mdi-calendar-plus"></i> Created on: ${this.LongDate}</div>
-      <div> <i class="mdi mdi-calendar-account"></i> Last Opened on: FIXME</div>
+      <div> <i class="mdi mdi-calendar-account"></i> Last Opened on: ${this.LongOpenedDate}</div>
     </div>
   </div>
   <hr />
-  <textarea>
-${this.details}
+  <form onsubmit="app.CaseFilesController.saveActiveNote()">
+  <div class="text-end my-1">
+    <button class="btn btn-warning" type="button" onclick="app.CaseFilesController.UnRedactCaseFile()"><i class="mdi mdi-eraser">${this.redacted ? 'Un-redact' : 'redact'}</i></button>
+    <button class="btn btn-success" type="submit" ${this.redacted ? 'disabled' : ''} ><i class="mdi mdi-content-save">Save</i></button>
+  </div>
+  <textarea ${this.redacted ? 'disabled' : ''} class="w-100" name="details">
+${this.redacted ? this.RedactedDetails : this.details}
   </textarea>
+  </form>
 </div>
 `
   }
@@ -47,7 +58,24 @@ ${this.details}
   }
 
   get LongDate() {
-    return this.createdAt.toLocaleString('en-US', { month: 'long', day: 'numeric', weekday: 'long', year: 'numeric' })
+    return this.createdAt.toLocaleString('en-US', { month: 'long', day: 'numeric', weekday: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric' })
+  }
+
+  get LongOpenedDate() {
+    return this.lastOpenedAt.toLocaleString('en-US', { month: 'long', day: 'numeric', weekday: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: '2-digit' })
+  }
+
+  get RedactedDetails() {
+    // NOTE this is DEFINITELY not part of your checkpoint. DO NOT USE THIS FOR REFERENCE
+    let out = []
+    this.details.split(' ').forEach(word => {
+      if (AppState.redactedList.includes(word.toLowerCase()) || AppState.redactedList.includes(word.replace(/\.|\'|s|[^a-zA-Z]/ig, '').toLowerCase())) {
+        out.push('⬛⬛⬛⬛')
+      } else {
+        out.push(word)
+      }
+    })
+    return out.join(' ')
   }
 
   generateCaseNumber() {
