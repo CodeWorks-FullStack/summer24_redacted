@@ -6,6 +6,8 @@ import { loadState, saveState } from "../utils/Store.js";
 
 class CaseFilesService {
   selectActiveCase(caseId) {
+    // We need find the case the user clicked on, think of the "valet" example.
+    // we have one small part of a greater whole. How can we use the small part to find the greater whole
     const selectedCaseFile = AppState.caseFiles.find(caseFile => caseFile.id == caseId)
     console.log('🐕‍🦺', caseId, selectedCaseFile);
     AppState.activeCaseFile = selectedCaseFile
@@ -16,7 +18,7 @@ class CaseFilesService {
     const activeCaseFile = AppState.activeCaseFile
     activeCaseFile.details = newDetails
     activeCaseFile.redacted = true
-    AppState.emit('activeCaseFile')
+    AppState.emit('activeCaseFile') // emit will trigger listeners, registered to the same "action". Here we didn't change 'activeCaseFile' directly so the listeners don't trigger, so we have to trigger them manually to draw
     this.saveCaseFiles()
   }
 
@@ -35,10 +37,15 @@ class CaseFilesService {
   }
 
   saveCaseFiles() {
+    // save, saves data in local storage under a key
+    // ---------Key.......................Data
     saveState('secret-files-do-not-touch', AppState.caseFiles)
   }
 
+  // NOTE make sure the instance type include the [] if you're trying to save an array of data
   loadCaseFiles() {
+    // Load loads data from local storage "Classes" it, and stores it
+    // Where it's stored............Key.........................Data Type
     AppState.caseFiles = loadState('secret-files-do-not-touch', [CaseFile])
   }
 }

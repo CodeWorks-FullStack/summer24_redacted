@@ -3,6 +3,8 @@ import { generateId } from "../utils/GenerateId.js";
 
 
 
+// REVIEW start with your model, what do you need to store in the model for your app to work? you can always come back and update this later
+
 export class CaseFile {
   constructor(data) {
     this.id = generateId()
@@ -28,6 +30,7 @@ export class CaseFile {
 `
   }
 
+  // NOTE this is a big template it would be wise to build it in an HTML document so you can design with better code or intellisense, then move it here
   get ActiveTemplate() {
     return `
 <div class="card rounded-0 shadow p-2 my-1">
@@ -53,6 +56,7 @@ ${this.redacted ? this.RedactedDetails : this.details}
 `
   }
 
+  // NOTE keep your dates as Date and create 'get' to display the formatted
   get ShortDate() {
     return this.createdAt.toLocaleDateString()
   }
@@ -78,6 +82,7 @@ ${this.redacted ? this.RedactedDetails : this.details}
     return out.join(' ')
   }
 
+  // NOTE also kinda cool but not at all something you would need for your checkpoint
   generateCaseNumber() {
     const number = this.id.slice(this.id.length - 4, this.id.length)
     switch (this.agency) {
