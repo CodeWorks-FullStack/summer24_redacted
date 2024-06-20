@@ -36,6 +36,9 @@ End of Report.`
       details: 'Some one left a bunch of trash in the woods. We have no idea who did it... Now we have to clean it up. We are requesting funding to do so.'
     })
   ]
+
+  /** @type {CaseFile} */
+  activeCaseFile = null
 }
 
 export const AppState = createObservableProxy(new ObservableAppState())

@@ -14,7 +14,40 @@ export class CaseFile {
 
 
   get ListTemplate() {
-    return `case-${this.caseNumber}`
+    return `
+<div class="row border-bottom border-dark selectable text-primary" onclick="app.CaseFilesController.selectActiveCase('${this.id}')">
+  <div class="col fw-bold text-dark">${this.caseNumber}</div>
+  <div class="col text-end text-dark" title="case created on ${this.LongDate}"><i class="mdi mdi-calendar"></i> ${this.ShortDate}
+  </div>
+</div>
+`
+  }
+
+  get ActiveTemplate() {
+    return `
+<div class="card rounded-0 shadow p-2 my-1">
+  <div class="fw-bold">
+    <h1><i class="mdi mdi-file-account"></i> ${this.caseNumber}</h1>
+    <div class="text-secondary">
+      <div><i class="mdi mdi-office-building"></i> Agency: ${this.agency}</div>
+      <div><i class="mdi mdi-calendar-plus"></i> Created on: ${this.LongDate}</div>
+      <div> <i class="mdi mdi-calendar-account"></i> Last Opened on: FIXME</div>
+    </div>
+  </div>
+  <hr />
+  <textarea>
+${this.details}
+  </textarea>
+</div>
+`
+  }
+
+  get ShortDate() {
+    return this.createdAt.toLocaleDateString()
+  }
+
+  get LongDate() {
+    return this.createdAt.toLocaleString('en-US', { month: 'long', day: 'numeric', weekday: 'long', year: 'numeric' })
   }
 
   generateCaseNumber() {
