@@ -31,7 +31,7 @@ class CaseFilesService {
     //   activeCaseFile.redacted = true
     // }
     activeCaseFile.redacted = !activeCaseFile.redacted
-    // REVIEW changing the opened date when it's "not redacted", if you aren't redacting stuff, just forget the if part
+    // REVIEW changing the opened date when it's "not redacted", if you aren't redacting stuff, just forget the if part, and maybe put it somewhere else.
     if (activeCaseFile.redacted == false) activeCaseFile.lastOpenedAt = new Date()  // if's don't need { } if the scope of that if ends on the same line as the if
     AppState.emit('activeCaseFile') // this triggers all listeners for "activeCaseFile"
   }
